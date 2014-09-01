@@ -1,0 +1,57 @@
+window.githubist = <?php
+echo json_encode(array(
+    'fileName' => $this->escape($this->fileName),
+    'fileContent' => $this->escape($this->fileContent),
+));
+?>;
+
+document.write('<pre id="<?php echo $this->uniqId; ?>">');
+document.write(window.githubist.fileContent);
+document.write('</pre>');
+
+function initHighlight<?php echo $this->uniqId; ?> ()
+{
+    $(document).ready(function () {
+        $('#<?php echo $this->uniqId; ?>').each(function (i, block) {
+            hljs.highlightBlock(block);
+        });
+    });
+}
+
+function initGithubist<?php echo $this->uniqId; ?> ()
+{
+    if (!window.hljs) {
+        var script = document.createElement("script");
+        script.setAttribute("src", "http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.2/highlight.min.js");
+        script.charset = "utf-8";
+        script.setAttribute("type", "text/javascript");
+        script.onload = initHighlight<?php echo $this->uniqId; ?>;
+        script.onreadystatechange = function () {
+            if (this.readyState == 'complete') {
+                initHighlight<?php echo $this->uniqId; ?>();
+            }
+        }
+        document.body.appendChild(script);
+
+        var link = document.createElement("link");
+        link.setAttribute('rel', 'stylesheet');
+        link.setAttribute('href', 'http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.2/styles/default.min.css');
+        document.body.appendChild(link);
+    }
+}
+if (!window.jQuery) {
+    var script = document.createElement("script");
+    script.setAttribute("src", "//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js");
+    script.charset = "utf-8";
+    script.setAttribute("type", "text/javascript");
+    script.onload = initGithubist<?php echo $this->uniqId; ?>;
+    script.onreadystatechange = function () {
+        if (this.readyState == 'complete') {
+            initGithubist<?php echo $this->uniqId; ?>();
+        }
+    }
+    document.body.appendChild(script);
+}
+else {
+    initGithubist<?php echo $this->uniqId; ?>();
+}
